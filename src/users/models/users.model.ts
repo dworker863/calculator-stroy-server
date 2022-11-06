@@ -1,5 +1,5 @@
 import { Column, DataType, Model, Table } from 'sequelize-typescript';
-import { IUser } from 'src/interfaces/user.interface';
+import { IUser } from '../interfaces/user.interface';
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, IUser> {
@@ -15,7 +15,7 @@ export class User extends Model<User, IUser> {
   username: string;
 
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
-  phone: string;
+  phoneNumber: string;
 
   @Column({ type: DataType.STRING, allowNull: false })
   password: string;
