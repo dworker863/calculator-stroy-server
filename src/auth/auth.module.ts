@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from './../users/users.module';
@@ -12,7 +13,7 @@ import { JwtModule } from '@nestjs/jwt';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: `${process.env.PRIVATE_KEY}`,
+      secret: 'secret_key_asdfasdfsdf',
       signOptions: {
         expiresIn: '30d',
       },

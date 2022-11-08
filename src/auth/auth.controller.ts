@@ -14,8 +14,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  login(@Body() user: any) {
-    // console.log(process.env.PRIVATE_KEY);
-    return this.authService.login({ phoneNumber: user.phoneNumber });
+  login(@Request() req) {
+    return this.authService.login(req.user.dataValues);
   }
 }
