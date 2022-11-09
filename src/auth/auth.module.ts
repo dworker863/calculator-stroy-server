@@ -1,4 +1,4 @@
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { UsersModule } from './../users/users.module';
@@ -12,11 +12,14 @@ import { JwtModule } from '@nestjs/jwt';
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.register({
-      secret: 'secret_key_asdfasdfsdf',
-      signOptions: {
-        expiresIn: '30d',
-      },
+    JwtModule.registerAsync({
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('PRIVATE_KEY'),
+        signOptions: {
+          expiresIn: '30d',
+        },
+      }),
+      inject: [ConfigService],
     }),
   ],
   controllers: [AuthController],

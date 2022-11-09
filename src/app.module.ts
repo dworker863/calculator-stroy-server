@@ -11,7 +11,7 @@ import { ServicesModule } from './services/services.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      cache: true,
     }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
