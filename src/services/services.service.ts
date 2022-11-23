@@ -1,5 +1,5 @@
 import { Service } from './models/services.model';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
@@ -10,6 +10,13 @@ export class ServicesService {
   constructor(@InjectModel(Service) private serviceModel: typeof Service) {}
 
   async create(createServiceDto: CreateServiceDto): Promise<IService> {
+    const checkService = await this.getServiceByName(createServiceDto.name);
+    console.log(checkService);
+    
+    if (checkService) {      
+      throw new HttpException('Данная услуга уже существует', HttpStatus.BAD_REQUEST)
+    } 
+    
     const service = await this.serviceModel.create(createServiceDto);
     return service;
   }
@@ -33,6 +40,11 @@ export class ServicesService {
 
   async remove(id: number): Promise<number> {
     const service = await this.serviceModel.destroy({ where: { id } });
+    return service;
+  }
+
+  async getServiceByName(name: string): Promise<IService> {
+    const service = await this.serviceModel.findOne({where: {name}})    
     return service;
   }
 }

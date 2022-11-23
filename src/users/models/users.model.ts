@@ -23,6 +23,6 @@ export class User extends Model<User, IUser> {
   @Column({ type: DataType.STRING, allowNull: true })
   email: string;
 
-  @Column({ type: DataType.STRING, allowNull: false })
+  @Column({ type: DataType.STRING, allowNull: false, defaultValue: 'User' })
   role: 'Admin' | 'User';
 }

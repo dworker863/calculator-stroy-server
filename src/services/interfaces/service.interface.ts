@@ -1,7 +1,7 @@
 export interface IService {
   name: string;
   measure: string;
-  material?: string[];
-  color?: string[];
-  price: string;
+  materials?: string[];
+  colors?: string[];
+  price: number;
 }

@@ -23,6 +23,8 @@ export class ServicesController {
   @Roles(ERole.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   create(@Body() createServiceDto: CreateServiceDto) {
+    console.log(createServiceDto);
+    
     return this.servicesService.create(createServiceDto);
   }
 

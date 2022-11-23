@@ -19,6 +19,8 @@ export class AuthService {
     );
 
     if (userWithPhone) {
+      console.log('11111');
+      
       throw new HttpException(
         'Пользователь с таким номером телефона уже существует',
         HttpStatus.BAD_REQUEST,
@@ -48,7 +50,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    // console.log(user);
+    console.log(user);
 
     const payload = {
       phoneNumber: user.phoneNumber,
@@ -57,6 +59,9 @@ export class AuthService {
     };
 
     return {
+      ...payload,
+      username: user.username,
+      email: user.email,
       access_token: this.jwtService.sign(payload),
     };
   }

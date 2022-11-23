@@ -18,11 +18,11 @@ export class Service extends Model<Service, IService> {
   measure: string;
 
   @Column({ type: DataType.ARRAY(DataType.STRING), allowNull: true })
-  material: string[];
+  materials: string[];
 
   @Column({ type: DataType.ARRAY(DataType.STRING), allowNull: true })
-  color: string[];
+  colors: string[];
 
-  @Column({ type: DataType.STRING, allowNull: false })
-  price: string;
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  price: number;
 }
