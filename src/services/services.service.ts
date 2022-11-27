@@ -11,7 +11,6 @@ export class ServicesService {
 
   async create(createServiceDto: CreateServiceDto): Promise<IService> {
     const checkService = await this.getServiceByName(createServiceDto.name);
-    console.log(checkService);
     
     if (checkService) {      
       throw new HttpException('Данная услуга уже существует', HttpStatus.BAD_REQUEST)
@@ -32,6 +31,15 @@ export class ServicesService {
   }
 
   async update(id: number, updateServiceDto: UpdateServiceDto): Promise<any> {
+    const checkService = await this.getServiceByName(updateServiceDto.name);
+    console.log(checkService);
+    console.log(checkService.id);
+    
+
+    if (checkService && checkService.id !== id) {
+      throw new HttpException('Данная услуга уже существует', HttpStatus.BAD_REQUEST)
+    }
+
     const service = await this.serviceModel.update(updateServiceDto, {
       where: { id },
     });
