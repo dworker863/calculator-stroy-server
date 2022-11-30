@@ -1,8 +1,9 @@
+import { IMaterial } from 'src/materials/interfaces/material.interface';
+
 export interface IService {
-  id?: number
+  id?: number;
   name: string;
   measure: string;
-  materials?: string[];
-  colors?: string[];
+  materials?: IMaterial[];
   price: number;
 }

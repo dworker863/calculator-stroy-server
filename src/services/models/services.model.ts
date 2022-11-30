@@ -1,5 +1,15 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  HasMany,
+  Model,
+  Table,
+} from 'sequelize-typescript';
+import { IMaterial } from 'src/materials/interfaces/material.interface';
+import { Material } from 'src/materials/models/materials.model';
 import { IService } from '../interfaces/service.interface';
+import { ServiceMaterials } from './service-materials.model';
 
 @Table({ tableName: 'services' })
 export class Service extends Model<Service, IService> {
@@ -17,11 +27,8 @@ export class Service extends Model<Service, IService> {
   @Column({ type: DataType.STRING, allowNull: false })
   measure: string;
 
-  @Column({ type: DataType.ARRAY(DataType.STRING), allowNull: true })
-  materials: string[];
-
-  @Column({ type: DataType.ARRAY(DataType.STRING), allowNull: true })
-  colors: string[];
+  @BelongsToMany(() => Material, () => ServiceMaterials)
+  materials: IMaterial[];
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   price: number;

@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ServicesModule } from './services/services.module';
+import { MaterialsModule } from './materials/materials.module';
 
 @Module({
   imports: [
@@ -21,10 +22,12 @@ import { ServicesModule } from './services/services.module';
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       autoLoadModels: true,
+      synchronize: true,
     }),
     UsersModule,
     AuthModule,
     ServicesModule,
+    MaterialsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
