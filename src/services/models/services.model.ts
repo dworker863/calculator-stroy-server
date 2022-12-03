@@ -28,7 +28,7 @@ export class Service extends Model<Service, IService> {
   measure: string;
 
   @BelongsToMany(() => Material, () => ServiceMaterials)
-  materials: IMaterial[];
+  materials: any[];
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   price: number;

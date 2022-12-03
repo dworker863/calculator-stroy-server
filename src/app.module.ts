@@ -23,6 +23,7 @@ import { MaterialsModule } from './materials/materials.module';
       password: process.env.DB_PASSWORD,
       autoLoadModels: true,
       synchronize: true,
+      // query: { plain: true, raw: true },
     }),
     UsersModule,
     AuthModule,

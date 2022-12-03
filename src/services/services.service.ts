@@ -1,3 +1,4 @@
+import { Material } from 'src/materials/models/materials.model';
 import { Service } from './models/services.model';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
@@ -11,17 +12,28 @@ export class ServicesService {
 
   async create(createServiceDto: CreateServiceDto): Promise<IService> {
     const checkService = await this.getServiceByName(createServiceDto.name);
-    
-    if (checkService) {      
-      throw new HttpException('Данная услуга уже существует', HttpStatus.BAD_REQUEST)
-    } 
-    
+
+    if (checkService) {
+      throw new HttpException(
+        'Данная услуга уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const service = await this.serviceModel.create(createServiceDto);
-    return service;
+    await service.$set('materials', createServiceDto.materials);
+    const populatedService = await this.serviceModel.findOne({
+      where: { name: createServiceDto.name },
+      include: { all: true },
+    });
+
+    return populatedService;
   }
 
   async findAll(): Promise<IService[]> {
-    const services = await this.serviceModel.findAll();
+    const services = await this.serviceModel.findAll({
+      include: { all: true },
+    });
     return services;
   }
 
@@ -32,18 +44,28 @@ export class ServicesService {
 
   async update(id: number, updateServiceDto: UpdateServiceDto): Promise<any> {
     const checkService = await this.getServiceByName(updateServiceDto.name);
-    console.log(checkService);
-    console.log(checkService.id);
-    
 
     if (checkService && checkService.id !== id) {
-      throw new HttpException('Данная услуга уже существует', HttpStatus.BAD_REQUEST)
+      throw new HttpException(
+        'Данная услуга уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const service = await this.serviceModel.update(updateServiceDto, {
       where: { id },
+      returning: true,
     });
-    return service;
+
+    await service[1][0].$set('materials', updateServiceDto.materials);
+    const populatedService = await this.serviceModel.findOne({
+      where: { id },
+      include: { all: true },
+    });
+
+    console.log(populatedService);
+
+    return populatedService;
   }
 
   async remove(id: number): Promise<number> {
@@ -52,7 +74,7 @@ export class ServicesService {
   }
 
   async getServiceByName(name: string): Promise<IService> {
-    const service = await this.serviceModel.findOne({where: {name}})    
+    const service = await this.serviceModel.findOne({ where: { name } });
     return service;
   }
 }
