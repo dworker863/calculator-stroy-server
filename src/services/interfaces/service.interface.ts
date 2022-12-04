@@ -4,6 +4,6 @@ export interface IService {
   id?: number;
   name: string;
   measure: string;
-  materials: any[];
+  materials: IMaterial[];
   price: number;
 }

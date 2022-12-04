@@ -1,26 +1,76 @@
-import { Injectable } from '@nestjs/common';
+import { IMaterial } from 'src/materials/interfaces/material.interface';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Material } from './models/materials.model';
 
 @Injectable()
 export class MaterialsService {
-  create(createMaterialDto: CreateMaterialDto) {
-    return 'This action adds a new material';
+  constructor(@InjectModel(Material) private materialModel: typeof Material) {}
+
+  async create(createMaterialDto: CreateMaterialDto): Promise<IMaterial> {
+    const checkMaterial = await this.getMaterialByName(createMaterialDto.name);
+
+    if (checkMaterial) {
+      throw new HttpException(
+        'Материал с таким названием уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const material = await this.materialModel.create(createMaterialDto);
+    await material.$set('services', createMaterialDto.services);
+    const populatedMaterial = await this.materialModel.findOne({
+      where: { name: createMaterialDto.name },
+      include: { all: true },
+    });
+
+    return populatedMaterial;
   }
 
-  findAll() {
-    return `This action returns all materials`;
+  async findAll(): Promise<IMaterial[]> {
+    const materials = await this.materialModel.findAll();
+    return materials;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} material`;
+  async findOne(id: number): Promise<IMaterial> {
+    const material = await this.materialModel.findByPk(id);
+    return material;
   }
 
-  update(id: number, updateMaterialDto: UpdateMaterialDto) {
-    return `This action updates a #${id} material`;
+  async update(id: number, updateMaterialDto: UpdateMaterialDto): Promise<any> {
+    const checkMaterial = await this.getMaterialByName(updateMaterialDto.name);
+
+    if (checkMaterial && checkMaterial.id !== id) {
+      throw new HttpException(
+        'Материал с таким названием уже существует',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    console.log(111);
+
+    const material = await this.materialModel.update(updateMaterialDto, {
+      where: { id },
+      returning: true,
+    });
+    await material[1][0].$set('services', updateMaterialDto.services);
+    const populatedMaterial = await this.materialModel.findOne({
+      where: { name: updateMaterialDto.name },
+      include: { all: true },
+    });
+
+    return populatedMaterial;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} material`;
+  async remove(id: number): Promise<number> {
+    const material = await this.materialModel.destroy({ where: { id } });
+    return material;
+  }
+
+  async getMaterialByName(name: string): Promise<IMaterial> {
+    const material = await this.materialModel.findOne({ where: { name } });
+    return material;
   }
 }

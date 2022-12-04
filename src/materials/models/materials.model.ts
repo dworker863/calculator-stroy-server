@@ -5,7 +5,6 @@ import {
   Model,
   Table,
 } from 'sequelize-typescript';
-import { IService } from 'src/services/interfaces/service.interface';
 import { ServiceMaterials } from 'src/services/models/service-materials.model';
 import { Service } from 'src/services/models/services.model';
 import { IMaterial } from '../interfaces/material.interface';
@@ -30,7 +29,7 @@ export class Material extends Model<Material, IMaterial> {
   package: number;
 
   @BelongsToMany(() => Service, () => ServiceMaterials)
-  services: IService[];
+  services: any[];
 
   @Column({ type: DataType.INTEGER, allowNull: false })
   price: number;
